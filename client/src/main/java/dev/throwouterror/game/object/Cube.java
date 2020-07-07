@@ -1,64 +1,36 @@
 package dev.throwouterror.game.object;
 
+import dev.throwouterror.game.renderer.Mesh;
+import dev.throwouterror.game.renderer.MeshRenderer;
+import dev.throwouterror.util.math.Tensor;
 import org.lwjgl.opengl.GL11;
 
+import static org.lwjgl.opengl.GL11.glColor3f;
+import static org.lwjgl.opengl.GL11.glVertex3f;
+
 public class Cube {
-    private Transform transform;
+    private final MeshRenderer renderer;
+    private Mesh mesh = new Mesh(new Tensor[]{
+            new Tensor(-0.5, 0.5f, 0.0f),
+            new Tensor(0.5, 0.5f, 0.0f),
+            new Tensor(0.5, -0.5f, 0.0f),
+            new Tensor(-0.5, -0.5f, 0.0f),
+    }, new int[]{
+            0, 1, 2,
+            1, 2, 3
+    });
 
-    public Cube() {
-        this.transform = new Transform();
+    public Cube(Transform t) {
+        this.renderer = new MeshRenderer(t);
+        mesh.create();
     }
-
-    public Cube(Transform transform) {
-        this.transform = transform;
-    }
-
+    
     public void render() {
-        GL11.glPushMatrix();
-        GL11.glTranslated(this.transform.getPosition().x(), this.transform.getPosition().y(), this.transform.getPosition().z());
-        GL11.glRotated(this.transform.getRotation().x(), 1.0, 0.0, 0.0);
-        GL11.glRotated(this.transform.getRotation().y(), 0.0, 1.0, 0.0);
-        GL11.glRotated(this.transform.getRotation().z(), 0.0, 0.0, 1.0);
-        GL11.glScaled(this.transform.getScale().x(), this.transform.getScale().y(), this.transform.getScale().z());
-        
-        GL11.glColor3f(0.0f, 0.0f, 0.0f);
-
-        GL11.glBegin(GL11.GL_QUADS);
-        GL11.glColor3f(1.0f, 1.0f, 0.0f);
-        GL11.glVertex3f(1.0f, 1.0f, -1.0f);
-        GL11.glVertex3f(-1.0f, 1.0f, -1.0f);
-        GL11.glVertex3f(-1.0f, 1.0f, 1.0f);
-        GL11.glVertex3f(1.0f, 1.0f, 1.0f);
-        GL11.glColor3f(1.0f, 0.5f, 0.0f);
-        GL11.glVertex3f(1.0f, -1.0f, 1.0f);
-        GL11.glVertex3f(-1.0f, -1.0f, 1.0f);
-        GL11.glVertex3f(-1.0f, -1.0f, -1.0f);
-        GL11.glVertex3f(1.0f, -1.0f, -1.0f);
-        GL11.glColor3f(1.0f, 0.0f, 0.0f);
-        GL11.glVertex3f(1.0f, 1.0f, 1.0f);
-        GL11.glVertex3f(-1.0f, 1.0f, 1.0f);
-        GL11.glVertex3f(-1.0f, -1.0f, 1.0f);
-        GL11.glVertex3f(1.0f, -1.0f, 1.0f);
-        GL11.glColor3f(1.0f, 1.0f, 0.0f);
-        GL11.glVertex3f(1.0f, -1.0f, -1.0f);
-        GL11.glVertex3f(-1.0f, -1.0f, -1.0f);
-        GL11.glVertex3f(-1.0f, 1.0f, -1.0f);
-        GL11.glVertex3f(1.0f, 1.0f, -1.0f);
-        GL11.glColor3f(0.0f, 0.0f, 1.0f);
-        GL11.glVertex3f(-1.0f, 1.0f, 1.0f);
-        GL11.glVertex3f(-1.0f, 1.0f, -1.0f);
-        GL11.glVertex3f(-1.0f, -1.0f, -1.0f);
-        GL11.glVertex3f(-1.0f, -1.0f, 1.0f);
-        GL11.glColor3f(1.0f, 0.0f, 1.0f);
-        GL11.glVertex3f(1.0f, 1.0f, -1.0f);
-        GL11.glVertex3f(1.0f, 1.0f, 1.0f);
-        GL11.glVertex3f(1.0f, -1.0f, 1.0f);
-        GL11.glVertex3f(1.0f, -1.0f, -1.0f);
-        GL11.glEnd();
-        GL11.glPopMatrix();
+        GL11.glColor3f(1,0,0);
+        this.renderer.renderMesh(mesh);
     }
 
-	public Transform getTransform() {
-        return this.transform;
+    public Transform getTransform() {
+        return this.renderer.getTransform();
     }
 }

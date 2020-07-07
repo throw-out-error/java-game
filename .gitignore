@@ -14,7 +14,9 @@ gradle-app.setting
 # gradle/wrapper/gradle-wrapper.properties
 .settings
 .idea
+bin/
 *.log
+.classpath
 .eclipse
 .project
 .metdata

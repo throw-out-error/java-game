@@ -3,9 +3,9 @@ package dev.throwouterror.game.object;
 import dev.throwouterror.util.math.Tensor;
 
 public class Transform {
-    private Tensor position;
-    private Tensor rotation;
-    private Tensor scale;
+    private final Tensor position;
+    private final Tensor rotation;
+    private final Tensor scale;
 
     public Transform() {
         this(new Tensor(0, 0, 0), new Tensor(0, 0, 0), new Tensor(1, 1, 1));
@@ -32,8 +32,17 @@ public class Transform {
     public Tensor getRotation() {
         return this.rotation;
     }
-    
+
     public Tensor getScale() {
         return this.scale;
+    }
+
+    @Override
+    public String toString() {
+        return "Transform{" +
+                "position=" + position +
+                ", rotation=" + rotation +
+                ", scale=" + scale +
+                '}';
     }
 }
