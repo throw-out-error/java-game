@@ -1,0 +1,15 @@
+group = "dev.throwouterror"
+version = "1.0.0"
+
+subprojects {
+    apply plugin: 'java'
+
+    repositories {
+        maven { url "https://jitpack.io"}
+    }
+    
+
+    dependencies {
+        implementation 'com.github.creepinson:throw-out-utils-java:-SNAPSHOT'
+    }
+}

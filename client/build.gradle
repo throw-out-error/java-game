@@ -1,0 +1,20 @@
+project.ext.lwjglVersion = "3.0.0a"
+
+apply plugin: 'application'
+
+application {
+    mainModule = 'dev.throwouterror.game' // name defined in module-info.java
+    mainClass = 'dev.throwouterror.game.Game'
+}
+
+repositories {
+    mavenCentral()
+    maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+}
+
+dependencies {
+	implementation "org.lwjgl:lwjgl:${lwjglVersion}"
+	implementation "org.lwjgl:lwjgl-platform:${lwjglVersion}:natives-windows"
+	implementation "org.lwjgl:lwjgl-platform:${lwjglVersion}:natives-linux"
+	implementation "org.lwjgl:lwjgl-platform:${lwjglVersion}:natives-osx"
+}
