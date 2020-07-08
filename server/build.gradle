@@ -1,0 +1,10 @@
+apply plugin: 'application'
+
+application {
+    mainModule = 'dev.throwouterror.game.server' // name defined in module-info.java
+    mainClass = 'dev.throwouterror.server.GameServer'
+}
+
+dependencies {
+    implementation project(":common")
+}

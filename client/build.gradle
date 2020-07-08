@@ -3,12 +3,11 @@ project.ext.lwjglVersion = "3.0.0a"
 apply plugin: 'application'
 
 application {
-    mainModule = 'dev.throwouterror.game' // name defined in module-info.java
-    mainClass = 'dev.throwouterror.game.Game'
+    mainModule = 'dev.throwouterror.game.client' // name defined in module-info.java
+    mainClass = 'dev.throwouterror.game.client.OpenGLGame'
 }
 
 repositories {
-    mavenCentral()
     maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
 }
 
@@ -17,5 +16,32 @@ dependencies {
 	implementation "org.lwjgl:lwjgl-platform:${lwjglVersion}:natives-windows"
 	implementation "org.lwjgl:lwjgl-platform:${lwjglVersion}:natives-linux"
 	implementation "org.lwjgl:lwjgl-platform:${lwjglVersion}:natives-osx"
+    implementation "org.jogamp.gluegen:gluegen-rt:2.3.1"
+    implementation "org.jogamp.jogl:jogl-all:2.3.1"
+
+    runtime "org.jogamp.gluegen:gluegen-rt:2.3.1:natives-android-aarch64"
+    runtime "org.jogamp.gluegen:gluegen-rt:2.3.1:natives-android-armv6"
+    runtime "org.jogamp.gluegen:gluegen-rt:2.3.1:natives-linux-amd64"
+    runtime "org.jogamp.gluegen:gluegen-rt:2.3.1:natives-linux-armv6"
+    runtime "org.jogamp.gluegen:gluegen-rt:2.3.1:natives-linux-armv6hf"
+    runtime "org.jogamp.gluegen:gluegen-rt:2.3.1:natives-linux-i586"
+    runtime "org.jogamp.gluegen:gluegen-rt:2.3.1:natives-macosx-universal"
+    runtime "org.jogamp.gluegen:gluegen-rt:2.3.1:natives-solaris-amd64"
+    runtime "org.jogamp.gluegen:gluegen-rt:2.3.1:natives-solaris-i586"
+    runtime "org.jogamp.gluegen:gluegen-rt:2.3.1:natives-windows-amd64"
+    runtime "org.jogamp.gluegen:gluegen-rt:2.3.1:natives-windows-i586"
+
+    runtime "org.jogamp.jogl:jogl-all:2.3.1:natives-android-aarch64"
+    runtime "org.jogamp.jogl:jogl-all:2.3.1:natives-android-armv6"
+    runtime "org.jogamp.jogl:jogl-all:2.3.1:natives-linux-amd64"
+    runtime "org.jogamp.jogl:jogl-all:2.3.1:natives-linux-armv6"
+    runtime "org.jogamp.jogl:jogl-all:2.3.1:natives-linux-armv6hf"
+    runtime "org.jogamp.jogl:jogl-all:2.3.1:natives-linux-i586"
+    runtime "org.jogamp.jogl:jogl-all:2.3.1:natives-macosx-universal"
+    runtime "org.jogamp.jogl:jogl-all:2.3.1:natives-solaris-amd64"
+    runtime "org.jogamp.jogl:jogl-all:2.3.1:natives-solaris-i586"
+    runtime "org.jogamp.jogl:jogl-all:2.3.1:natives-windows-amd64"
+    runtime "org.jogamp.jogl:jogl-all:2.3.1:natives-windows-i586"
+
     implementation project(":common")
 }
