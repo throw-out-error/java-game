@@ -1,8 +1,8 @@
-group = "dev.throwouterror"
-version = "1.0.0"
-
 subprojects {
     apply plugin: 'java'
+    apply plugin: 'idea'
+    group = "dev.throwouterror"
+    version = "1.0.0"
 
     repositories {
         maven { url "https://jitpack.io"}
@@ -12,5 +12,6 @@ subprojects {
 
     dependencies {
         implementation 'com.github.creepinson:throw-out-utils-java:-SNAPSHOT'
+        implementation 'org.joml:joml:1.9.25'
     }
 }

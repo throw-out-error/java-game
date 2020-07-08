@@ -36,7 +36,7 @@ public class Window {
 
     public void create() {
         if (GLFW.glfwInit() == GL_FALSE) {
-            System.err.println("ERROR: GLFW wasn't initializied");
+            System.err.println("ERROR: GLFW wasn't initialized");
             return;
         }
 
@@ -87,8 +87,15 @@ public class Window {
             isResized = false;
         }
         GL11.glClearColor(background.floatX(), background.floatY(), background.floatZ(), 1.0f);
+        GL11.glEnable(GL11.GL_DEPTH_TEST);
+        GL11.glDepthFunc(GL11.GL_LESS);
+        GL11.glEnable(GL11.GL_CULL_FACE);
+        GL11.glCullFace(GL11.GL_BACK);
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
         GLFW.glfwPollEvents();
+
         frames++;
         if (System.currentTimeMillis() > time + 1000) {
             GLFW.glfwSetWindowTitle(window, title + " | FPS: " + frames);
@@ -119,15 +126,6 @@ public class Window {
 
     public boolean isFullscreen() {
         return isFullscreen;
-    }
-
-    public void setFullscreen(boolean isFullscreen) {
-        this.isFullscreen = isFullscreen;
-        isResized = true;
-        if (isFullscreen) {
-            GLFW.glfwSetWindowSize(window, windowPosX[0], windowPosY[0]);
-        }
-        GLFW.glfwSetWindowSize(window, width, height);
     }
 
     public int getWidth() {
