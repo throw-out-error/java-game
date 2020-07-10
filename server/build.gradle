@@ -1,8 +1,9 @@
-apply plugin: 'application'
+plugins {
+    id 'edu.sc.seis.launch4j' version '2.4.6'
+}
 
-application {
-    mainModule = 'dev.throwouterror.game.server' // name defined in module-info.java
-    mainClass = 'dev.throwouterror.server.GameServer'
+launch4j {
+    mainClassName = 'dev.throwouterror.game.server.ServerGame'
 }
 
 dependencies {

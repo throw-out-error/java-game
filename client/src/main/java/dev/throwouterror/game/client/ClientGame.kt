@@ -10,7 +10,12 @@ import com.jogamp.newt.opengl.GLWindow
 import com.jogamp.opengl.*
 import com.jogamp.opengl.glu.GLU
 import com.jogamp.opengl.util.FPSAnimator
+import dev.throwouterror.game.client.mesh.CubeMesh
+import dev.throwouterror.game.client.mesh.MeshRenderer
+import dev.throwouterror.game.common.Player
 import dev.throwouterror.game.common.Transform
+import java.util.*
+import kotlin.collections.HashMap
 import kotlin.system.exitProcess
 
 
@@ -18,28 +23,30 @@ import kotlin.system.exitProcess
  * @author Creepinson
  */
 class ClientGame : Thread() {
-    private var socketThread: ClientSocket? = null
-    var game: Thread? = null
-    val width = 800
-    val height = 800
-    private val cube: Cube? = null
+    var glWindow: GLWindow? = null
+    private var socketThread: ClientSocket = ClientSocket(this)
+    private val width = 800
+    private val height = 800
+    private var cube: MeshRenderer? = null
     private val glu = GLU()
+    var player: ClientPlayer? = null
+    val players: HashMap<UUID, Player> = HashMap()
 
     private fun init() {
         val glp = GLProfile.get("GL2")
         val caps = GLCapabilities(glp)
 
-        val glWindow = GLWindow.create(caps)
-        glWindow.title = "OpenGL Game"
-        glWindow.setSize(width, height)
-        glWindow.isVisible = true
+        glWindow = GLWindow.create(caps)
+        glWindow!!.title = "OpenGL Game"
+        glWindow!!.setSize(width, height)
+        glWindow!!.isVisible = true
 
-        glWindow.addWindowListener(object : WindowAdapter() {
+        glWindow!!.addWindowListener(object : WindowAdapter() {
             override fun windowDestroyNotify(e: WindowEvent?) {
                 exitProcess(0)
             }
         })
-        glWindow.addGLEventListener(object : GLEventListener {
+        glWindow!!.addGLEventListener(object : GLEventListener {
             override fun init(drawable: GLAutoDrawable) {
                 val gl = drawable.gl.gL2
                 gl.glShadeModel(GL2.GL_SMOOTH)
@@ -77,14 +84,15 @@ class ClientGame : Thread() {
 
         val animator = FPSAnimator(glWindow, 60)
         animator.start()
-        val cube = Cube(Transform.pos(0f, 0f, -5.0f))
-        glWindow.addGLEventListener(cube)
+
+        cube = MeshRenderer(Transform.pos(0f, 0f, -5.0f), CubeMesh())
+        glWindow!!.addGLEventListener(cube)
     }
 
     override fun run() {
-        socketThread = ClientSocket(this)
-        socketThread?.start()
-        init()
+        socketThread.start()
+        if (socketThread.isAlive)
+            init()
     }
 
     companion object {
