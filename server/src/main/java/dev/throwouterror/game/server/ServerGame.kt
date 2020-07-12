@@ -1,75 +1,56 @@
-/*
- * Copyright (c) Creepinson
- */
+
 package dev.throwouterror.game.server
 
-import dev.throwouterror.game.common.Player
+import dev.throwouterror.eventbus.annotation.EventHandler
 import dev.throwouterror.game.common.Transform
-import dev.throwouterror.game.common.networking.Packet
-import dev.throwouterror.game.common.networking.PlayerInfo
-import dev.throwouterror.game.common.networking.TextPacket
+import dev.throwouterror.game.common.network.PlayerInfo
+import dev.throwouterror.game.common.network.packet.PlayerInfoPacket
+import dev.throwouterror.util.data.JsonUtils
+import xyz.baddeveloper.lwsl.server.SocketServer
+import xyz.baddeveloper.lwsl.server.events.ServerConnectEvent
+import xyz.baddeveloper.lwsl.server.events.ServerDisconnectEvent
+import xyz.baddeveloper.lwsl.server.events.ServerPacketReceivedEvent
 import java.io.IOException
-import java.io.ObjectInputStream
-import java.io.ObjectOutputStream
-import java.net.ServerSocket
-import java.net.Socket
-import java.net.SocketException
-import java.net.SocketTimeoutException
 import java.util.*
-import java.util.concurrent.LinkedBlockingQueue
 
-class ServerGame(port: Int) : Thread() {
-    private val players: ArrayList<ConnectionToClient> = arrayListOf()
-    private val messages: LinkedBlockingQueue<Packet> = LinkedBlockingQueue()
-    private val serverSocket: ServerSocket = ServerSocket(port)
+/**
+ * Creates a new game server with the port and the maximum number of players.
+ * You can set the maxConnections to 0 so that there can be an infinite amount of players.
+ */
+class ServerGame(port: Int, private val maxConnections: Int) : Thread() {
+
+    val server: SocketServer = SocketServer(port)
+    private val players: ArrayList<ServerPlayer> = arrayListOf()
+
     override fun run() {
-        while (true) {
-            try {
-                println("Waiting for client on port " +
-                        serverSocket.localPort + "...")
-                val client = serverSocket.accept()
-                println("Just connected to " + client.remoteSocketAddress)
-                val info = PlayerInfo(UUID.randomUUID(), Transform())
-                players.add(ConnectionToClient(client, messages, info.id, info.transform))
-                sendToOne(info.id, TextPacket("player-info", info.toJson()))
+        server.setMaxConnections(maxConnections)
+                .addEventListener(this)
+        server.start();
+    }
 
-                val packet = messages.poll()
-                if (packet != null) {
-                    if (packet.name == "updateTransform") {
-                        val msg = packet as TextPacket
-                        sendToAllExcept(info.id, TextPacket("playerTransform", PlayerInfo(info.id, Transform.fromJson(msg.getPacketData())).toJson()))
-                    }
-                }
-            } catch (e: SocketException) {
-                println("Client has closed the connection.")
-            } catch (e: SocketTimeoutException) {
-                // do nothing
-            } catch (e: IOException) {
-                e.printStackTrace()
-                break
-            }
+    @EventHandler
+    fun onPacketReceived(event: ServerPacketReceivedEvent) {
+        val packet = event.packet
+        val data = packet.getObject();
+        if (packet.isPacket(PlayerInfoPacket::class.java) && data.getString("type") == "updateTransform") {
+            val info = JsonUtils.get().fromJson(data.getString("info"), PlayerInfo::class.java)
+            event.client.sendPacket(PlayerInfoPacket("playerTransform", PlayerInfo(info.id, info.transform)))
         }
     }
 
-    @Throws(IndexOutOfBoundsException::class)
-    fun sendToOne(index: Int, message: Packet) {
-        players[index].write(message)
+    @EventHandler
+    fun onConnect(event: ServerConnectEvent) {
+        println(String.format("Client connected! (%s)", event.client.socket.remoteSocketAddress.toString()))
+        val player = ServerPlayer(event.client, UUID.randomUUID(), Transform.pos(0f, 0f, -5f))
+
+        event.client.sendPacket(PlayerInfoPacket("createPlayer", PlayerInfo.fromPlayer(player)))
+        players.add(player)
     }
 
-    @Throws(IndexOutOfBoundsException::class)
-    fun sendToOne(id: UUID, message: Packet) {
-        players.filter { p -> p.id == id }[0].write(message)
+    @EventHandler
+    fun onDisconnect(event: ServerDisconnectEvent) {
+        println(String.format("Client disconnected! (%s)", event.client.socket.remoteSocketAddress.toString()))
     }
-
-    fun sendToAll(message: Packet) {
-        for (client in players) client.write(message)
-    }
-
-    @Throws(IndexOutOfBoundsException::class)
-    fun sendToAllExcept(id: UUID, message: Packet) {
-        for (client in players.filter { p -> p.id != id }) client.write(message)
-    }
-
 
     companion object {
         @JvmStatic
@@ -77,10 +58,10 @@ class ServerGame(port: Int) : Thread() {
             try {
                 if (args.isNotEmpty() && args[0] != "") {
                     val port = args[0].toInt()
-                    val t: Thread = ServerGame(port)
+                    val t: Thread = ServerGame(port, 0)
                     t.start()
                 } else {
-                    val t: Thread = ServerGame(3000)
+                    val t: Thread = ServerGame(3000, 0)
                     t.start()
                 }
             } catch (e: IOException) {
@@ -88,39 +69,4 @@ class ServerGame(port: Int) : Thread() {
             }
         }
     }
-
-    private class ConnectionToClient internal constructor(var socket: Socket, messages: LinkedBlockingQueue<Packet>, id: UUID, transform: Transform) : Player(id, transform) {
-        var `in`: ObjectInputStream = ObjectInputStream(socket.getInputStream())
-        var out: ObjectOutputStream = ObjectOutputStream(socket.getOutputStream())
-
-        fun write(obj: Packet) {
-            try {
-                obj.toStream(out)
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
-        }
-
-        init {
-            val read: Thread = object : Thread() {
-                override fun run() {
-                    while (true) {
-                        try {
-                            val obj = Packet.fromStream(`in`)
-                            messages.put(obj)
-                        } catch (e: IOException) {
-                            e.printStackTrace()
-                        }
-                    }
-                }
-            }
-            read.isDaemon = true // terminate when main ends
-            read.start()
-        }
-    }
-
-    init {
-        serverSocket.soTimeout = 10000
-    }
-
 }

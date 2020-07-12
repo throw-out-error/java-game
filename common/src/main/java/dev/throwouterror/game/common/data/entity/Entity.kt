@@ -1,10 +1,6 @@
-/*
- * Copyright (c) Creepinson
- */
+package dev.throwouterror.game.common.data.entity
 
-package dev.throwouterror.game.common
-
-import dev.throwouterror.game.common.networking.TextPacket
+import dev.throwouterror.game.common.Transform
 import dev.throwouterror.util.data.JsonUtils
 import java.io.Serializable
 import java.util.*
@@ -15,6 +11,9 @@ import java.util.*
 open class Entity : Serializable {
     var transform: Transform = Transform()
         set
+    var parent: Entity? = null
+    val children: ArrayList<Entity> = arrayListOf()
+
     val type: String
     var id: UUID
 
@@ -42,7 +41,21 @@ open class Entity : Serializable {
         return JsonUtils.get().toJson(this)
     }
 
-    fun toPacket(name: String): TextPacket {
-        return TextPacket(name, toJson())
+    fun update() {
+        this.update(this.children)
+    }
+
+    /**
+     * This function is meant to be overridden by other entities.
+     */
+    fun update(children: ArrayList<Entity>) {
+        for (child in children) {
+            this.update(child.children)
+        }
+        onUpdate()
+    }
+
+    open fun onUpdate() {
+
     }
 }

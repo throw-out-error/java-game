@@ -1,8 +1,7 @@
-/*
- * Copyright (c) Creepinson
- */
-package dev.throwouterror.game.common
 
+package dev.throwouterror.game.common.data.entity
+
+import dev.throwouterror.game.common.Transform
 import java.util.*
 
 /**

@@ -1,55 +1,38 @@
-/*
- * Copyright (c) Creepinson
- */
 package dev.throwouterror.game.client
 
-import com.jogamp.newt.event.KeyEvent
-import com.jogamp.newt.event.KeyListener
-import com.jogamp.opengl.GLAutoDrawable
-import com.jogamp.opengl.GLEventListener
-import dev.throwouterror.game.common.Player
+import dev.throwouterror.game.client.engine.Camera
+import dev.throwouterror.game.client.engine.input.Input
+import dev.throwouterror.game.client.engine.input.Keyboard
 import dev.throwouterror.game.common.Transform
+import dev.throwouterror.game.common.data.entity.Player
+import dev.throwouterror.game.common.network.PlayerInfo
+import dev.throwouterror.game.common.network.packet.PlayerInfoPacket
+import dev.throwouterror.util.math.Direction
 import java.util.*
+
 
 /**
  * @author Theo Paris
  */
-class ClientPlayer(id: UUID, transform: Transform, private var socket: ClientSocket) : Player(id, transform), GLEventListener, KeyListener {
+class ClientPlayer(id: UUID, transform: Transform, private var socket: ClientSocket) : Player(id, transform) {
 
-    private val movementSpeed = 0.02f
-    private var camera: Camera = Camera(transform, 800, 800)
+    private val movementSpeed = 0.02
+    var camera: Camera = Camera(transform.clone().move(Direction.UP))
 
     private fun sendTransform() {
-        socket.send(transform.toPacket("updateTransform"))
+        socket.connection?.sendPacket(PlayerInfoPacket("updateTransform", PlayerInfo(id, transform)))
     }
 
-    override fun reshape(drawable: GLAutoDrawable, x: Int, y: Int, width: Int, height: Int) {
-        camera.reshape(drawable, x, y, width, height)
-    }
-
-    override fun display(drawable: GLAutoDrawable) {
-        camera.display(drawable)
+    override fun onUpdate() {
+        if (Input.isKeyDown(Keyboard.W)) move(0.0, 0.0, this.movementSpeed)
+        if (Input.isKeyDown(Keyboard.S)) move(0.0, 0.0, -this.movementSpeed)
+        if (Input.isKeyDown(Keyboard.A)) move(-this.movementSpeed, 0.0, 0.0)
+        if (Input.isKeyDown(Keyboard.D)) move(this.movementSpeed, 0.0, 0.0)
+        camera.rotate(Input.mouse)
         sendTransform()
     }
 
-    override fun init(drawable: GLAutoDrawable) {
-        camera.init(drawable)
-    }
-
-    override fun dispose(drawable: GLAutoDrawable) {
-
-    }
-
-    override fun keyPressed(e: KeyEvent) {
-        when (e.keyChar.toLowerCase()) {
-            'w' -> transform.position.add(0f, 0f, this.movementSpeed)
-            's' -> transform.position.add(0f, 0f, -this.movementSpeed)
-            'a' -> transform.position.add(-this.movementSpeed, 0f, 0f)
-            'd' -> transform.position.add(this.movementSpeed, 0f, 0f)
-        }
-    }
-
-    override fun keyReleased(e: KeyEvent) {
-
+    fun move(x: Double, y: Double, z: Double) {
+        this.camera.moveForward(transform, x, y, z)
     }
 }

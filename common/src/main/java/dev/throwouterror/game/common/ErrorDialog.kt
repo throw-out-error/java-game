@@ -1,6 +1,4 @@
-/*
- * Copyright (c) Creepinson
- */
+
 package dev.throwouterror.game.common
 
 import javax.swing.JFrame

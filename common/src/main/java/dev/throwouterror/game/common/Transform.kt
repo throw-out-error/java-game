@@ -1,19 +1,15 @@
-/*
- * Copyright (c) Creepinson
- */
-
 package dev.throwouterror.game.common
 
 
-import dev.throwouterror.game.common.networking.TextPacket
 import dev.throwouterror.util.data.JsonUtils
-import org.joml.Vector3f
+import dev.throwouterror.util.math.Direction
+import dev.throwouterror.util.math.Tensor
 import java.io.Serializable
 
-class Transform @JvmOverloads constructor(val position: Vector3f = Vector3f(0f, 0f, 0f), val rotation: Vector3f = Vector3f(0f, 0f, 0f), val scale: Vector3f = Vector3f(1f, 1f, 1f)) : Serializable {
+class Transform @JvmOverloads constructor(val position: Tensor = Tensor.ZERO_VECTOR.clone(), val rotation: Tensor = Tensor.ZERO_VECTOR.clone(), val scale: Tensor = Tensor(1.0, 1.0, 1.0)) : Serializable {
 
     fun clone(): Transform {
-        return Transform(Vector3f(this.position), Vector3f(this.rotation), Vector3f(this.scale))
+        return Transform(this.position.clone(), this.rotation.clone(), this.scale.clone())
     }
 
     override fun toString(): String {
@@ -24,12 +20,18 @@ class Transform @JvmOverloads constructor(val position: Vector3f = Vector3f(0f, 
                 '}'.toString()
     }
 
-    fun toPacket(name: String): TextPacket {
-        return TextPacket(name, toJson())
-    }
-
     fun toJson(): String {
         return JsonUtils.get().toJson(this)
+    }
+
+    fun move(t: Tensor): Transform {
+        this.position.add(t)
+        return this
+
+    }
+
+    fun move(t: Direction): Transform {
+        return this.move(t.facingVec)
     }
 
     companion object {
@@ -37,8 +39,16 @@ class Transform @JvmOverloads constructor(val position: Vector3f = Vector3f(0f, 
             return JsonUtils.get().fromJson(json, Transform::class.java)
         }
 
+        fun pos(x: Double, y: Double, z: Double): Transform {
+            return Transform(Tensor(x, y, z), Tensor.ZERO_VECTOR.clone(), Tensor(1.0, 1.0, 1.0))
+        }
+
         fun pos(x: Float, y: Float, z: Float): Transform {
-            return Transform(Vector3f(x, y, z), Vector3f(0f, 0f, 0f), Vector3f(1f, 1f, 1f))
+            return pos(x.toDouble(), y.toDouble(), z.toDouble())
+        }
+
+        fun pos(x: Int, y: Int, z: Int): Transform {
+            return pos(x.toDouble(), y.toDouble(), z.toDouble())
         }
     }
 }

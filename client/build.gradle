@@ -2,6 +2,9 @@ plugins {
     id 'edu.sc.seis.launch4j' version '2.4.6'
 }
 
+project.ext.lwjglVersion = "3.0.0a"
+
+
 launch4j {
     mainClassName = 'dev.throwouterror.game.client.ClientGame'
 }
@@ -11,32 +14,9 @@ repositories {
 }
 
 dependencies {
-    implementation "org.jogamp.gluegen:gluegen-rt:2.3.1"
-    implementation "org.jogamp.jogl:jogl-all:2.3.1"
-
-    runtime "org.jogamp.gluegen:gluegen-rt:2.3.1:natives-android-aarch64"
-    runtime "org.jogamp.gluegen:gluegen-rt:2.3.1:natives-android-armv6"
-    runtime "org.jogamp.gluegen:gluegen-rt:2.3.1:natives-linux-amd64"
-    runtime "org.jogamp.gluegen:gluegen-rt:2.3.1:natives-linux-armv6"
-    runtime "org.jogamp.gluegen:gluegen-rt:2.3.1:natives-linux-armv6hf"
-    runtime "org.jogamp.gluegen:gluegen-rt:2.3.1:natives-linux-i586"
-    runtime "org.jogamp.gluegen:gluegen-rt:2.3.1:natives-macosx-universal"
-    runtime "org.jogamp.gluegen:gluegen-rt:2.3.1:natives-solaris-amd64"
-    runtime "org.jogamp.gluegen:gluegen-rt:2.3.1:natives-solaris-i586"
-    runtime "org.jogamp.gluegen:gluegen-rt:2.3.1:natives-windows-amd64"
-    runtime "org.jogamp.gluegen:gluegen-rt:2.3.1:natives-windows-i586"
-
-    runtime "org.jogamp.jogl:jogl-all:2.3.1:natives-android-aarch64"
-    runtime "org.jogamp.jogl:jogl-all:2.3.1:natives-android-armv6"
-    runtime "org.jogamp.jogl:jogl-all:2.3.1:natives-linux-amd64"
-    runtime "org.jogamp.jogl:jogl-all:2.3.1:natives-linux-armv6"
-    runtime "org.jogamp.jogl:jogl-all:2.3.1:natives-linux-armv6hf"
-    runtime "org.jogamp.jogl:jogl-all:2.3.1:natives-linux-i586"
-    runtime "org.jogamp.jogl:jogl-all:2.3.1:natives-macosx-universal"
-    runtime "org.jogamp.jogl:jogl-all:2.3.1:natives-solaris-amd64"
-    runtime "org.jogamp.jogl:jogl-all:2.3.1:natives-solaris-i586"
-    runtime "org.jogamp.jogl:jogl-all:2.3.1:natives-windows-amd64"
-    runtime "org.jogamp.jogl:jogl-all:2.3.1:natives-windows-i586"
-
+    implementation "org.lwjgl:lwjgl:${lwjglVersion}"
+    implementation "org.lwjgl:lwjgl-platform:${lwjglVersion}:natives-windows"
+    implementation "org.lwjgl:lwjgl-platform:${lwjglVersion}:natives-linux"
+    implementation "org.lwjgl:lwjgl-platform:${lwjglVersion}:natives-osx"
     implementation project(":common")
 }
