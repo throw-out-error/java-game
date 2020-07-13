@@ -20,7 +20,7 @@ class Window(var width: Int,
     private val windowPosY = IntArray(1)
     fun create() {
         if (!GLFW.glfwInit()) {
-            System.err.println("ERROR: GLFW wasn't initializied")
+            System.err.println("ERROR: GLFW wasn't initialized")
             return
         }
         input = Input()

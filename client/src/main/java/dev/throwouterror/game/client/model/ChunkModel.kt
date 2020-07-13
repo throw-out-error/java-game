@@ -1,5 +1,6 @@
 package dev.throwouterror.game.client.model
 
+import dev.throwouterror.game.client.engine.Model
 import dev.throwouterror.game.client.engine.mesh.CubeMesh
 import dev.throwouterror.game.client.engine.mesh.Mesh
 import dev.throwouterror.game.common.Transform
@@ -40,7 +41,7 @@ class ChunkModel(val chunk: Chunk) {
             while (y < Chunk.CHUNK_SIZE.z) {
                 var z = 0
                 while (z < Chunk.CHUNK_SIZE.z) {
-                    blocks[x][y][z]?.draw()
+                    blocks[x][y][z]?.render()
                     z++;
                 }
                 y++

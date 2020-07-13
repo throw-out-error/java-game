@@ -1,11 +1,12 @@
 package dev.throwouterror.game.client.engine.mesh
 
 import dev.throwouterror.util.math.Tensor
-import org.lwjgl.BufferUtils
 import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL15
 import org.lwjgl.opengl.GL20
 import org.lwjgl.opengl.GL30
+import org.lwjgl.system.MemoryUtil
+
 
 open class Mesh(val vertices: ArrayList<Tensor>, val indices: ArrayList<Int>) {
     var vao = 0
@@ -31,21 +32,25 @@ open class Mesh(val vertices: ArrayList<Tensor>, val indices: ArrayList<Int>) {
     fun create() {
         vao = GL30.glGenVertexArrays()
         GL30.glBindVertexArray(vao)
-        val positionBuffer = BufferUtils.createFloatBuffer(vertices.size * 3)
-        val positionData = FloatArray(vertices.size * 3)
-        for (i in vertices.indices) {
-            positionData[i * 3] = vertices[i].x.toFloat()
-            positionData[i * 3 + 1] = vertices[i].y.toFloat()
-            positionData[i * 3 + 2] = vertices[i].z.toFloat()
+
+        val positionBuffer = MemoryUtil.memAllocDouble(vertices.size * 3)
+        val positionData = DoubleArray(vertices.size * 3)
+        for (i in 0 until vertices.size) {
+            positionData[i * 3] = vertices[i].x
+            positionData[i * 3 + 1] = vertices[i].y
+            positionData[i * 3 + 2] = vertices[i].z
         }
         positionBuffer.put(positionData).flip()
+
         pbo = GL15.glGenBuffers()
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, pbo)
         GL15.glBufferData(GL15.GL_ARRAY_BUFFER, positionBuffer, GL15.GL_STATIC_DRAW)
-        GL20.glVertexAttribPointer(0, 3, GL11.GL_FLOAT, false, 0, 0)
+        GL20.glVertexAttribPointer(0, 3, GL11.GL_DOUBLE, false, 0, 0)
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0)
-        val indicesBuffer = BufferUtils.createIntBuffer(indices.size)
+
+        val indicesBuffer = MemoryUtil.memAllocInt(indices.size)
         indicesBuffer.put(indices.toIntArray()).flip()
+
         ibo = GL15.glGenBuffers()
         GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, ibo)
         GL15.glBufferData(GL15.GL_ELEMENT_ARRAY_BUFFER, indicesBuffer, GL15.GL_STATIC_DRAW)
