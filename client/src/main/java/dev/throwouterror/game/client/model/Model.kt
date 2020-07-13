@@ -1,20 +1,43 @@
 package dev.throwouterror.game.client.model
 
 import dev.throwouterror.game.client.engine.mesh.Mesh
+import dev.throwouterror.game.client.engine.renderer.ShaderProgram
 import dev.throwouterror.game.client.engine.renderer.renderMesh
 import dev.throwouterror.game.common.Transform
 import dev.throwouterror.util.math.Tensor
-import org.lwjgl.opengl.GL11
+import org.lwjgl.opengl.GL20
 
 /**
  * @author Theo Paris
  */
-open class Model(var transform: Transform, var mesh: Mesh, var color: Tensor = Tensor(0f, 0f, 0f)) {
+open class Model(var transform: Transform, var mesh: Mesh, var color: Tensor = Tensor(0f, 0f, 0f, 1f)) {
     var parent: Model? = null
     val children: ArrayList<Model> = arrayListOf()
+    val shader: ShaderProgram = ShaderProgram("#version 330 core\n" +
+            "#extension GL_ARB_separate_shader_objects : enable\n" +
+            "// Input vertex data, different for all executions of this shader.\n" +
+            "layout (location = 0) in vec3 position;\n" +
+            "\n" +
+            "void main()\n" +
+            "{\n" +
+            "    gl_Position = vec4(position, 1.0);\n" +
+            "}", "#version 330 core\n" +
+            "\n" +
+            "layout(location = 0) out vec4 diffuseColor;\n" +
+            "\n" +
+            "void main()\n" +
+            "{\n" +
+            "    \n" +
+            "}", mapOf())
 
-    fun render() {
-        this.render(this.children)
+    init {
+        shader.use()
+        storeTransformations()
+    }
+
+    private fun storeTransformations() {
+        GL20.glUniform4f(shader.getUniformLocation("diffuseColor"), color.x.toFloat(), color.y.toFloat(), color.z.toFloat(), color.w.toFloat())
+        GL20.glUniform3f(shader.getUniformLocation("position"), transform.position.x.toFloat(), transform.position.y.toFloat(), transform.position.z.toFloat())
     }
 
     fun append(m: Model): Model {
@@ -23,20 +46,15 @@ open class Model(var transform: Transform, var mesh: Mesh, var color: Tensor = T
         return this
     }
 
-    fun render(children: ArrayList<Model>) {
+    fun render() {
         for (child in children) {
-            this.render(child.children)
+            child.render()
         }
         draw()
     }
 
     open fun draw() {
-        GL11.glColor3d(color.x, color.y, color.z)
-        GL11.glTranslated(transform.position.x, transform.position.y, transform.position.z)
-        GL11.glScaled(transform.scale.x, transform.scale.y, transform.scale.z)
-        GL11.glRotated(transform.rotation.x, 1.0, 0.0, 0.0)
-        GL11.glRotated(transform.rotation.y, 0.0, 1.0, 0.0)
-        GL11.glRotated(transform.rotation.z, 0.0, 0.0, 1.0)
+        storeTransformations()
         renderMesh(mesh)
     }
 }

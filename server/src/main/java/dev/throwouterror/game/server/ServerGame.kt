@@ -1,4 +1,3 @@
-
 package dev.throwouterror.game.server
 
 import dev.throwouterror.eventbus.annotation.EventHandler
@@ -41,7 +40,7 @@ class ServerGame(port: Int, private val maxConnections: Int) : Thread() {
     @EventHandler
     fun onConnect(event: ServerConnectEvent) {
         println(String.format("Client connected! (%s)", event.client.socket.remoteSocketAddress.toString()))
-        val player = ServerPlayer(event.client, UUID.randomUUID(), Transform.pos(0f, 0f, -5f))
+        val player = ServerPlayer(event.client, PlayerInfo(UUID.randomUUID(), Transform.pos(0f, 0f, 0f)))
 
         event.client.sendPacket(PlayerInfoPacket("createPlayer", PlayerInfo.fromPlayer(player)))
         players.add(player)

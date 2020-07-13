@@ -41,16 +41,12 @@ open class Entity : Serializable {
         return JsonUtils.get().toJson(this)
     }
 
-    fun update() {
-        this.update(this.children)
-    }
-
     /**
      * This function is meant to be overridden by other entities.
      */
-    fun update(children: ArrayList<Entity>) {
+    fun update() {
         for (child in children) {
-            this.update(child.children)
+            child.update()
         }
         onUpdate()
     }

@@ -1,4 +1,3 @@
-
 package dev.throwouterror.game.client
 
 import dev.throwouterror.eventbus.annotation.EventHandler
@@ -10,7 +9,6 @@ import xyz.baddeveloper.lwsl.client.events.ClientConnectEvent
 import xyz.baddeveloper.lwsl.client.events.ClientDisconnectEvent
 import xyz.baddeveloper.lwsl.client.events.ClientPacketReceivedEvent
 import xyz.baddeveloper.lwsl.client.events.ClientPacketSentEvent
-import java.net.InetAddress
 import javax.swing.JFrame
 import javax.swing.JOptionPane
 
@@ -19,7 +17,6 @@ import javax.swing.JOptionPane
  * @author Theo Paris
  */
 class ClientSocket(val game: ClientGame) : Thread() {
-    val host = InetAddress.getLocalHost()
     var connection: SocketClient? = null
 
     override fun run() {
@@ -55,9 +52,7 @@ class ClientSocket(val game: ClientGame) : Thread() {
             if (data.getString("type") == "createPlayer") {
                 val info = JsonUtils.get().fromJson(data.getString("info"), PlayerInfo::class.java)
                 println("Received player info with id: " + info.id.toString())
-                game.player = ClientPlayer(info.id, info.transform, this)
-                game.glWindow!!.addGLEventListener(game.player)
-                game.frame.addKeyListener(game.player)
+                game.player = ClientPlayer(info, this)
                 game.players[info.id] = game.player!!
             }
 

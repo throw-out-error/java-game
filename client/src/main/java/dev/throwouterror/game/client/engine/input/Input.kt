@@ -10,21 +10,21 @@ class Input {
     val mouseScrollCallback: GLFWScrollCallback
 
     fun destroy() {
-        keyboardCallback.release()
-        mouseMoveCallback.release()
-        mouseButtonsCallback.release()
-        mouseScrollCallback.release()
+        keyboardCallback.free()
+        mouseMoveCallback.free()
+        mouseButtonsCallback.free()
+        mouseScrollCallback.free()
     }
 
     companion object {
         private val keys = BooleanArray(GLFW.GLFW_KEY_LAST)
         private val buttons = BooleanArray(GLFW.GLFW_MOUSE_BUTTON_LAST)
-        val mouse: Tensor = Tensor(0.0, 0.0)
+        private val mouse: Tensor = Tensor(0.0, 0.0)
         val scroll: Tensor = Tensor(0.0, 0.0)
 
-        fun getMouse3(): Tensor {
-            return Tensor(mouse.x, mouse.y, 0.0)
-        }
+        fun getMouse2(): Tensor = mouse.clone()
+
+        fun getMouse3(): Tensor = Tensor(mouse.x, mouse.y, 0.0)
 
         fun isKeyDown(key: Keyboard): Boolean {
             return keys[KeyboardInputHelper.get(key.ordinal)]
