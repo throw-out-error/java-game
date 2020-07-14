@@ -7,5 +7,5 @@ import java.io.InputStream
  */
 abstract class Resource {
     protected fun getResource(file: String, onSuccess: (stream: InputStream) -> Unit) =
-            FileUtils.read(file, onSuccess)
+            onSuccess(FileUtils.read(file))
 }
