@@ -49,8 +49,16 @@ class Shader(file: String, type: ShaderType) : Resource() {
         GL32.glCompileShader(id)
     }
 
-    fun use() {
+    fun bind() {
         GL20.glUseProgram(id)
+    }
+
+    fun unbind() {
+        GL20.glUseProgram(0)
+    }
+
+    fun destroy() {
+        GL20.glDeleteProgram(id)
     }
 
     fun getUniformLocation(s: String): Int {

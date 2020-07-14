@@ -18,6 +18,9 @@ class QuadMesh : Mesh() {
                 0, 1, 2,
                 2, 3, 1
         ))
+        indicesCount = indices.size
+
+        bindAll()
     }
 
     override fun decode(stream: InputStream, onSuccess: (vertices: MutableList<Float>, uvCoordinates: FloatArray, normals: FloatArray, indices: IntArray) -> Unit) {

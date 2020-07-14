@@ -21,7 +21,11 @@ abstract class Mesh : Resource() {
     var uvCoordinates: MutableList<Float> = mutableListOf()
     var normals: MutableList<Float> = mutableListOf()
     var indices: MutableList<Int> = mutableListOf()
-    val id: Int = GL30.glGenVertexArrays()
+    val vao = GL30.glGenVertexArrays()
+    val pbo = GL15.glGenBuffers()
+    val ibo = GL15.glGenBuffers()
+    val nbo = GL15.glGenBuffers()
+    val ubo = GL15.glGenBuffers()
     var indicesCount: Int = 0
         protected set
 
@@ -37,52 +41,43 @@ abstract class Mesh : Resource() {
         this.indices.addAll(other.indices)
     }
 
-    protected open fun bindAll() {
-
-        GL30.glBindVertexArray(id)
+    fun bindAll() {
+        GL30.glBindVertexArray(vao)
 
         // Bind vertices
         vertices.let {
-            GL15.glGenBuffers().also { glBuffer ->
-                GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, glBuffer)
-                GL15.glBufferData(GL15.GL_ARRAY_BUFFER, it.toFloatArray().toBuffer(), GL15.GL_STATIC_DRAW)
-                GL20.glVertexAttribPointer(
-                        0, 3, GL11.GL_FLOAT,
-                        false, 0, 0
-                )
-            }
+            GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, pbo)
+            GL15.glBufferData(GL15.GL_ARRAY_BUFFER, it.toFloatArray().toBuffer(), GL15.GL_STATIC_DRAW)
+            GL20.glVertexAttribPointer(
+                    0, 3, GL11.GL_FLOAT,
+                    false, 0, 0
+            )
         }
 
         // Bind uvCoordinates
         uvCoordinates.let {
-            GL15.glGenBuffers().also { glBuffer ->
-                GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, glBuffer)
-                GL15.glBufferData(GL15.GL_ARRAY_BUFFER, it.toFloatArray().toBuffer(), GL15.GL_STATIC_DRAW)
-                GL20.glVertexAttribPointer(
-                        1, 2, GL11.GL_FLOAT,
-                        false, 0, 0
-                )
-            }
+            GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, ubo)
+            GL15.glBufferData(GL15.GL_ARRAY_BUFFER, it.toFloatArray().toBuffer(), GL15.GL_STATIC_DRAW)
+            GL20.glVertexAttribPointer(
+                    1, 2, GL11.GL_FLOAT,
+                    false, 0, 0
+            )
         }
 
         // Bind normals
         normals.let {
-            GL15.glGenBuffers().also { glBuffer ->
-                GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, glBuffer)
-                GL15.glBufferData(GL15.GL_ARRAY_BUFFER, it.toFloatArray().toBuffer(), GL15.GL_STATIC_DRAW)
-                GL20.glVertexAttribPointer(
-                        2, 3, GL11.GL_FLOAT,
-                        false, 0, 0
-                )
-            }
+            GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, nbo)
+            GL15.glBufferData(GL15.GL_ARRAY_BUFFER, it.toFloatArray().toBuffer(), GL15.GL_STATIC_DRAW)
+            GL20.glVertexAttribPointer(
+                    2, 3, GL11.GL_FLOAT,
+                    false, 0, 0
+            )
         }
 
         // Bind indices
         indices.let {
-            GL15.glGenBuffers().also { glBuffer ->
-                GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, glBuffer)
-                GL15.glBufferData(GL15.GL_ELEMENT_ARRAY_BUFFER, it.toIntArray().toBuffer(), GL15.GL_STATIC_DRAW)
-            }
+            GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, ibo)
+            GL15.glBufferData(GL15.GL_ELEMENT_ARRAY_BUFFER, it.toIntArray().toBuffer(), GL15.GL_STATIC_DRAW)
         }
 
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0)

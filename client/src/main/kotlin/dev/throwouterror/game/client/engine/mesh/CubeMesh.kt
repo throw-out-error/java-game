@@ -98,6 +98,9 @@ class CubeMesh : Mesh() {
                 7,
                 3
         ))
+        indicesCount = indices.size
+
+        bindAll()
     }
 
     override fun decode(stream: InputStream, onSuccess: (vertices: MutableList<Float>, uvCoordinates: FloatArray, normals: FloatArray, indices: IntArray) -> Unit) {
