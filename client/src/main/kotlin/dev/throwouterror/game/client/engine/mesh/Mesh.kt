@@ -26,8 +26,6 @@ abstract class Mesh : Resource() {
     val ibo = GL15.glGenBuffers()
     val nbo = GL15.glGenBuffers()
     val ubo = GL15.glGenBuffers()
-    var indicesCount: Int = 0
-        protected set
 
     protected abstract fun decode(stream: InputStream, onSuccess: (vertices: MutableList<Float>,
                                                                    uvCoordinates: FloatArray,

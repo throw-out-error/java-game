@@ -1,27 +1,21 @@
 package dev.throwouterror.game.client.engine
 
+import dev.throwouterror.game.client.engine.material.Material
 import dev.throwouterror.game.client.engine.mesh.Mesh
 import dev.throwouterror.game.client.engine.renderer.Shader
 import dev.throwouterror.game.client.engine.renderer.renderMesh
 import dev.throwouterror.game.common.Transform
-import dev.throwouterror.util.math.Tensor
 
 /**
  * @author Theo Paris
  */
-open class Model(var transform: Transform, var mesh: Mesh, var color: Tensor = Tensor(0f, 0f, 0f)) {
+open class Model(var transform: Transform, var mesh: Mesh, var material: Material) {
     var parent: Model? = null
     val children: ArrayList<Model> = arrayListOf()
     val shader: Shader = Shader("shaders/vertex.glsl", "shaders/fragment.glsl")
 
     init {
-        storeTransformations()
-    }
-
-    private fun storeTransformations() {
-        shader.setUniform("position", transform.position)
-        shader.setUniform("scale", transform.scale)
-        shader.setUniform("color", color)
+        shader.create()
     }
 
     fun append(m: Model): Model {
@@ -31,14 +25,17 @@ open class Model(var transform: Transform, var mesh: Mesh, var color: Tensor = T
     }
 
     fun render() {
-        for (child in children) {
-            child.render()
-        }
+        if (children.size > 0)
+            for (child in children)
+                child.render()
         draw()
     }
 
     open fun draw() {
-        storeTransformations()
-        renderMesh(mesh, shader)
+        renderMesh(this)
+    }
+
+    fun destroy() {
+        shader.destroy()
     }
 }

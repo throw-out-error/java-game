@@ -10,7 +10,6 @@ import xyz.baddeveloper.lwsl.client.SocketClient
 import xyz.baddeveloper.lwsl.client.events.ClientConnectEvent
 import xyz.baddeveloper.lwsl.client.events.ClientDisconnectEvent
 import xyz.baddeveloper.lwsl.client.events.ClientPacketReceivedEvent
-import xyz.baddeveloper.lwsl.client.events.ClientPacketSentEvent
 import xyz.baddeveloper.lwsl.exceptions.ConnectException
 
 
@@ -60,10 +59,5 @@ class ClientSocket(val game: ClientGame) : Thread() {
                 game.players[info.id]?.transform = info.transform
             }
         }
-    }
-
-    @EventHandler
-    fun onPacketSent(event: ClientPacketSentEvent) {
-        println(String.format("Sent packet %s to %s.", event.packet.getObject().toString(), event.client.address))
     }
 }

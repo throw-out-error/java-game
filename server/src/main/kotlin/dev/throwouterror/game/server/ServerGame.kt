@@ -33,7 +33,7 @@ class ServerGame(port: Int, private val maxConnections: Int) : Thread() {
         val data = packet.getObject();
         if (packet.isPacket(PlayerInfoPacket::class.java) && data.getString("type") == "updateTransform") {
             val info = JsonUtils.get().fromJson(data.getString("info"), PlayerInfo::class.java)
-            event.client.sendPacket(PlayerInfoPacket("playerTransform", PlayerInfo(info.id, info.transform)))
+            players.filter { it.id != info.id }.forEach { it.socket.sendPacket(PlayerInfoPacket("playerTransform", PlayerInfo(info.id, info.transform))) }
         }
     }
 

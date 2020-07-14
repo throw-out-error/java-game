@@ -17,6 +17,7 @@ class Shader(vertexPath: String, fragmentPath: String) : Resource() {
     private var vertexID = 0
     private var fragmentID = 0
     private var programID = 0
+
     fun create() {
         programID = GL20.glCreateProgram()
         vertexID = GL20.glCreateShader(GL20.GL_VERTEX_SHADER)

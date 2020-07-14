@@ -26,8 +26,8 @@ class Input {
 
         fun getMouse3(): Tensor = Tensor(mouse.x, mouse.y, 0.0)
 
-        fun isKeyDown(key: Keyboard): Boolean {
-            return keys[KeyboardInputHelper.get(key.ordinal)]
+        fun isKeyDown(key: Int): Boolean {
+            return keys[key]
         }
 
         fun isButtonDown(button: Int): Boolean {

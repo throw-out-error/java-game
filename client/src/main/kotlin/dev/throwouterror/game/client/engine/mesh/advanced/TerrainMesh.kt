@@ -9,7 +9,6 @@ import java.io.InputStream
  */
 
 class TerrainMesh(size: Int, faceScale: Float, noiseScale: Float, textureScale: Float) : Mesh() {
-
     init {
         // Generate faces
         repeat(size) { z ->
@@ -43,7 +42,6 @@ class TerrainMesh(size: Int, faceScale: Float, noiseScale: Float, textureScale: 
             }
         }
 
-        indicesCount = indices.size
         bindAll()
     }
 

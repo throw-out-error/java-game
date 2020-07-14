@@ -15,7 +15,6 @@ class WaveFront(file: String) : Mesh() {
         if (!file.endsWith(".obj")) throw Exception("This file not is a WaveFront.")
         getResource(file) { stream ->
             decode(stream) { vertices, uvCoordinates, normals, indices ->
-                indicesCount = indices.size
                 this.vertices = vertices
                 this.uvCoordinates = uvCoordinates.toMutableList()
                 this.normals = normals.toMutableList()

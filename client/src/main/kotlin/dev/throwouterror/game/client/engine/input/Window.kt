@@ -104,6 +104,10 @@ class Window(var width: Int,
         }
     }
 
+    fun isFullscreen(): Boolean {
+        return isFullscreen
+    }
+
     companion object {
         private var time: Long = 0
     }

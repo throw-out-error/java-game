@@ -98,8 +98,6 @@ class CubeMesh : Mesh() {
                 7,
                 3
         ))
-        indicesCount = indices.size
-
         bindAll()
     }
 
