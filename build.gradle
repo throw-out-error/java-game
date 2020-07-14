@@ -8,14 +8,18 @@ buildscript {
     }
 }
 
-apply plugin: "org.jetbrains.kotlin.jvm"
-
 allprojects {
     apply plugin: 'java'
+    apply plugin: "org.jetbrains.kotlin.jvm"
+
     apply plugin: 'idea'
     group = "dev.throwouterror"
     version = "1.0.0"
-    
+
+    sourceSets {
+        main.kotlin.srcDirs += 'src/main/kotlin'
+    }
+
     repositories {
         maven { url "https://jitpack.io" }
         mavenCentral()
