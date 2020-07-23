@@ -32,7 +32,7 @@ allprojects {
         implementation 'com.github.creepinson:throw-out-utils-java:-SNAPSHOT'
 //        implementation 'me.creepinson:throw-out-utils:1.0.0'
         implementation 'org.joml:joml:1.9.25'
-        implementation "xyz.baddeveloper:lwsl:2.0.2-RELEASE"
+        implementation "dev.throwouterror:lwsl:2.2.0-RELEASE"
     }
 }
 

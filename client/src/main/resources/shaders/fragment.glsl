@@ -1,10 +1,9 @@
-#version 330 core
+#version 300 es
 
+in mediump vec3 passColor;
+in mediump vec2 passTextureCoord;
 
-in vec3 passColor;
-in vec2 passTextureCoord;
-
-out vec4 outColor;
+out mediump vec4 outColor;
 
 uniform sampler2D tex;
 

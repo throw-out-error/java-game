@@ -18,7 +18,7 @@ class ClientPlayer(info: PlayerInfo, private var socket: ClientSocket) : Player(
     var camera: Camera = Camera(transform.clone().move(Direction.UP))
 
     private fun sendTransform() {
-        socket.connection?.sendPacket(PlayerInfoPacket("updateTransform", PlayerInfo(id, transform)))
+        socket.connection.sendPacket(PlayerInfoPacket("updateTransform", PlayerInfo(id, transform)))
     }
 
     override fun onUpdate() {

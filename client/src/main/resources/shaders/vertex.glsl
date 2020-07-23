@@ -1,5 +1,6 @@
-#version 330 core
+#version 300 es
 #extension GL_ARB_separate_shader_objects : enable
+
 // Input vertex data, different for all executions of this shader.
 in vec3 position;
 in vec3 color;

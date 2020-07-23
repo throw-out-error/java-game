@@ -1,15 +1,14 @@
-
 package dev.throwouterror.game.common.network.packet
 
 import dev.throwouterror.game.common.network.PlayerInfo
-import xyz.baddeveloper.lwsl.Packet
+import xyz.baddeveloper.lwsl.packet.Packet
 
 /**
  * @author Theo Paris
  */
 class PlayerInfoPacket(type: String, info: PlayerInfo) : Packet() {
     init {
-        `object`.put("type", type)
-        `object`.put("info", info.toJson())
+        jsonObject.put("type", type)
+        jsonObject.put("info", info.toJson())
     }
 }
