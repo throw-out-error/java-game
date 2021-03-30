@@ -3,7 +3,7 @@ package dev.throwouterror.game.common.data.entity
 import dev.throwouterror.game.common.Transform
 import dev.throwouterror.util.data.JsonUtils
 import java.io.Serializable
-import java.util.*
+import java.util.UUID
 
 /**
  * @author Theo Paris
@@ -38,7 +38,7 @@ open class Entity : Serializable {
     }
 
     fun toJson(): String {
-        return JsonUtils.get().toJson(this)
+        return JsonUtils.builder.toJson(this)
     }
 
     /**
@@ -52,6 +52,5 @@ open class Entity : Serializable {
     }
 
     open fun onUpdate() {
-
     }
 }

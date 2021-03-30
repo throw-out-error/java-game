@@ -8,7 +8,6 @@ import org.lwjgl.opengl.GL13
 import org.lwjgl.opengl.GL15
 import org.lwjgl.opengl.GL30
 
-
 private fun storeTransformations(shader: Shader, transform: Transform, color: Tensor) {
     shader.setUniform("position", transform.position)
     shader.setUniform("scale", transform.scale)

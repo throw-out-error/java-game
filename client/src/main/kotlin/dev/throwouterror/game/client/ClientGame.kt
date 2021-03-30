@@ -9,7 +9,7 @@ import dev.throwouterror.game.common.Transform
 import dev.throwouterror.game.common.data.entity.Player
 import dev.throwouterror.util.math.Tensor
 import org.lwjgl.glfw.GLFW
-import java.util.*
+import java.util.UUID
 import kotlin.collections.HashMap
 import kotlin.concurrent.thread
 
@@ -24,7 +24,7 @@ class ClientGame : Thread() {
     val players: HashMap<UUID, Player> = HashMap()
 
     override fun run() {
-        socketThread.start()
+//        socketThread.start()
         window.setBackgroundColor(1f, 1f, 1f)
         window.create()
         // Initialize game objects

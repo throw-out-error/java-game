@@ -27,10 +27,15 @@ abstract class Mesh : Resource() {
     val nbo = GL15.glGenBuffers()
     val ubo = GL15.glGenBuffers()
 
-    protected abstract fun decode(stream: InputStream, onSuccess: (vertices: MutableList<Float>,
-                                                                   uvCoordinates: FloatArray,
-                                                                   normals: FloatArray,
-                                                                   indices: IntArray) -> Unit)
+    protected abstract fun decode(
+        stream: InputStream,
+        onSuccess: (
+            vertices: MutableList<Float>,
+            uvCoordinates: FloatArray,
+            normals: FloatArray,
+            indices: IntArray
+        ) -> Unit
+    )
 
     fun append(other: Mesh) {
         this.vertices.addAll(other.vertices)
@@ -47,8 +52,8 @@ abstract class Mesh : Resource() {
             GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, pbo)
             GL15.glBufferData(GL15.GL_ARRAY_BUFFER, it.toFloatArray().toBuffer(), GL15.GL_STATIC_DRAW)
             GL20.glVertexAttribPointer(
-                    0, 3, GL11.GL_FLOAT,
-                    false, 0, 0
+                0, 3, GL11.GL_FLOAT,
+                false, 0, 0
             )
         }
 
@@ -57,8 +62,8 @@ abstract class Mesh : Resource() {
             GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, ubo)
             GL15.glBufferData(GL15.GL_ARRAY_BUFFER, it.toFloatArray().toBuffer(), GL15.GL_STATIC_DRAW)
             GL20.glVertexAttribPointer(
-                    1, 2, GL11.GL_FLOAT,
-                    false, 0, 0
+                1, 2, GL11.GL_FLOAT,
+                false, 0, 0
             )
         }
 
@@ -67,8 +72,8 @@ abstract class Mesh : Resource() {
             GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, nbo)
             GL15.glBufferData(GL15.GL_ARRAY_BUFFER, it.toFloatArray().toBuffer(), GL15.GL_STATIC_DRAW)
             GL20.glVertexAttribPointer(
-                    2, 3, GL11.GL_FLOAT,
-                    false, 0, 0
+                2, 3, GL11.GL_FLOAT,
+                false, 0, 0
             )
         }
 

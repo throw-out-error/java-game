@@ -3,13 +3,8 @@ package dev.throwouterror.game.client.engine.renderer
 import dev.throwouterror.game.common.util.FileUtils
 import dev.throwouterror.game.common.util.Resource
 import dev.throwouterror.util.math.Tensor
-import org.joml.Matrix4f
-import org.joml.Vector2f
-import org.joml.Vector3f
 import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL20
-import org.lwjgl.system.MemoryUtil
-
 
 class Shader(vertexPath: String, fragmentPath: String) : Resource() {
     private val vertexFile: String = FileUtils.readStr(vertexPath)
@@ -64,22 +59,24 @@ class Shader(vertexPath: String, fragmentPath: String) : Resource() {
         GL20.glUniform1i(getUniformLocation(name), if (value) 1 else 0)
     }
 
-    fun setUniform(name: String, value: Vector2f) {
-        GL20.glUniform2f(getUniformLocation(name), value.x, value.y)
-    }
-
     fun setUniform(name: String, value: Tensor) {
-        GL20.glUniform3f(getUniformLocation(name), value.x.toFloat(), value.y.toFloat(), value.z.toFloat())
-    }
-
-    fun setUniform(name: String, value: Vector3f) {
-        GL20.glUniform3f(getUniformLocation(name), value.x, value.y, value.z)
-    }
-
-    fun setUniform(name: String, value: Matrix4f) {
-        val matrix = MemoryUtil.memAllocFloat(4 * 4)
-        value.get(matrix).flip()
-        GL20.glUniformMatrix4fv(getUniformLocation(name), true, matrix)
+        when (value.data.size) {
+            1 -> GL20.glUniform1f(getUniformLocation(name), value.x.toFloat())
+            2 -> GL20.glUniform2f(getUniformLocation(name), value.x.toFloat(), value.y.toFloat())
+            3 -> GL20.glUniform3f(
+                getUniformLocation(name),
+                value.x.toFloat(),
+                value.y.toFloat(),
+                value.z.toFloat()
+            )
+            4 -> GL20.glUniform4f(
+                getUniformLocation(name),
+                value.x.toFloat(),
+                value.y.toFloat(),
+                value.z.toFloat(),
+                value.w.toFloat()
+            )
+        }
     }
 
     fun bind() {

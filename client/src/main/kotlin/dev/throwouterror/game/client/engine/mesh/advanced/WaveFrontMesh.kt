@@ -1,7 +1,7 @@
 package dev.throwouterror.game.client.engine.mesh.advanced
 
 import dev.throwouterror.game.client.engine.mesh.Mesh
-import org.joml.Vector3i
+import dev.throwouterror.util.math.Tensor
 import java.io.BufferedReader
 import java.io.InputStream
 import java.io.InputStreamReader
@@ -10,7 +10,7 @@ import java.io.InputStreamReader
  * @author Throw Out Error (https://throw-out-error.dev)
  */
 
-class WaveFront(file: String) : Mesh() {
+class WaveFrontMesh(file: String) : Mesh() {
     init {
         if (!file.endsWith(".obj")) throw Exception("This file not is a WaveFront.")
         getResource(file) { stream ->
@@ -24,19 +24,24 @@ class WaveFront(file: String) : Mesh() {
         }
     }
 
-    override fun decode(stream: InputStream, onSuccess: (vertices: MutableList<Float>,
-                                                         uvCoordinates: FloatArray,
-                                                         normals: FloatArray,
-                                                         indices: IntArray) -> Unit) {
+    override fun decode(
+        stream: InputStream,
+        onSuccess: (
+            vertices: MutableList<Float>,
+            uvCoordinates: FloatArray,
+            normals: FloatArray,
+            indices: IntArray
+        ) -> Unit
+    ) {
         // [0] uvCoordinates [1] normal
         val buffer = mutableListOf<FloatArray>()
         val vertices = mutableListOf<Float>()
         val uvCoordinates = mutableListOf<Float>()
         val normals = mutableListOf<Float>()
         val faces = arrayOf<MutableList<Int>>(
-                mutableListOf(),    // [0] vertex_indices
-                mutableListOf(),    // [1] uvCoordinates_indices
-                mutableListOf()     // [2] normals_indices
+            mutableListOf(), // [0] vertex_indices
+            mutableListOf(), // [1] uvCoordinates_indices
+            mutableListOf() // [2] normals_indices
         )
 
         BufferedReader(InputStreamReader(stream)).also { file ->
@@ -45,41 +50,41 @@ class WaveFront(file: String) : Mesh() {
                     when {
                         line.startsWith("v ") ->
                             line.substring(2)
-                                    .split(' ')
-                                    .filter { it.isNotEmpty() }
-                                    .map { str ->
-                                        str.toFloat()
-                                    }.also { vertices.addAll(it) }
+                                .split(' ')
+                                .filter { it.isNotEmpty() }
+                                .map { str ->
+                                    str.toFloat()
+                                }.also { vertices.addAll(it) }
 
                         line.startsWith("vt ") ->
                             line.substring(2)
-                                    .split(' ')
-                                    .filter { it.isNotEmpty() }
-                                    .map { str ->
-                                        str.toFloat()
-                                    }.also { uvCoordinates.addAll(it) }
+                                .split(' ')
+                                .filter { it.isNotEmpty() }
+                                .map { str ->
+                                    str.toFloat()
+                                }.also { uvCoordinates.addAll(it) }
 
                         line.startsWith("vn ") ->
                             line.substring(2)
-                                    .split(' ')
-                                    .filter { it.isNotEmpty() }
-                                    .map { str ->
-                                        str.toFloat()
-                                    }.also { normals.addAll(it) }
+                                .split(' ')
+                                .filter { it.isNotEmpty() }
+                                .map { str ->
+                                    str.toFloat()
+                                }.also { normals.addAll(it) }
 
                         line.startsWith("f ") ->
                             line.substring(2).split(' ')
-                                    .filter { it.isNotEmpty() }
-                                    .forEach { values ->
-                                        values.split("/")
-                                                .filter { it.isNotEmpty() }
-                                                .map { str -> str.toInt() }.also { face ->
-                                                    repeat(3) { index ->
-                                                        faces[index]
-                                                                .add(face[index] - 1)
-                                                    }
-                                                }
-                                    }
+                                .filter { it.isNotEmpty() }
+                                .forEach { values ->
+                                    values.split("/")
+                                        .filter { it.isNotEmpty() }
+                                        .map { str -> str.toInt() }.also { face ->
+                                            repeat(3) { index ->
+                                                faces[index]
+                                                    .add(face[index] - 1)
+                                            }
+                                        }
+                                }
                     }
                 } ?: break
             }
@@ -89,25 +94,25 @@ class WaveFront(file: String) : Mesh() {
             }
 
             repeat(faces[0].size) { index ->
-                val face = Vector3i(
-                        faces[0][index],
-                        faces[1][index],
-                        faces[2][index]
+                val face = Tensor(
+                    faces[0][index],
+                    faces[1][index],
+                    faces[2][index]
                 )
                 with(buffer[0]) {
-                    val col = face.x * 2
+                    val col = (face.x * 2).toInt()
 
-                    this[col] = uvCoordinates[face.y * 2]
+                    this[col] = uvCoordinates[(face.y * 2).toInt()]
                     this[(col + 1)] =
-                            1 - uvCoordinates[(face.y * 2 + 1)]
+                        1 - uvCoordinates[((face.y * 2 + 1).toInt())]
                 }
 
                 with(buffer[1]) {
                     val col = face.x * 3
 
-                    this[col] = normals[face.z * 3]
-                    this[col + 1] = normals[face.z * 3 + 1]
-                    this[col + 2] = normals[face.z * 3 + 2]
+                    this[col.toInt()] = normals[(face.z * 3).toInt()]
+                    this[(col + 1).toInt()] = normals[(face.z * 3 + 1).toInt()]
+                    this[(col + 2).toInt()] = normals[(face.z * 3 + 2).toInt()]
                 }
             }
             file.close()

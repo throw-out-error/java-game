@@ -1,17 +1,15 @@
-
 package dev.throwouterror.game.common.data
 
+import SimplexNoise
 import dev.throwouterror.game.common.Transform
 import dev.throwouterror.game.common.Transform.Companion.pos
 import dev.throwouterror.util.data.JsonUtils
-import org.joml.Random
-import org.joml.SimplexNoise
-import org.joml.Vector3i
+import dev.throwouterror.util.math.Tensor
 
 /**
  * @author Theo Paris
  */
-class Chunk @JvmOverloads constructor(val origin: Transform, private val seed: Long = Random.newSeed()) {
+class Chunk @JvmOverloads constructor(val origin: Transform, private val seed: Int = (0..Int.MAX_VALUE).random()) {
     val blocks: Array<Array<Array<Block?>>>
 
     fun addBlock(b: Block) {
@@ -26,8 +24,8 @@ class Chunk @JvmOverloads constructor(val origin: Transform, private val seed: L
         while (x < CHUNK_SIZE.x) {
             val z = 0
             while (z < CHUNK_SIZE.z) {
-                val y = SimplexNoise.noise(x.toFloat(), z.toFloat(), seed.toFloat()) * CHUNK_SIZE.y
-                addBlock(Block("dirt", pos(x.toFloat(), y, z.toFloat())))
+                val y = SimplexNoise(seed).noise(x.toDouble(), z.toDouble()) * CHUNK_SIZE.y
+                addBlock(Block("dirt", pos(x.toDouble(), y, z.toDouble())))
                 x++
             }
             x++
@@ -35,17 +33,21 @@ class Chunk @JvmOverloads constructor(val origin: Transform, private val seed: L
     }
 
     fun toJson(): String {
-        return JsonUtils.get().toJson(this);
+        return JsonUtils.builder.toJson(this)
     }
 
     companion object {
-        var CHUNK_SIZE = Vector3i(16, 16, 16)
+        var CHUNK_SIZE = Tensor(16, 16, 16)
         fun fromJson(s: String): Chunk {
-            return JsonUtils.get().fromJson(s, Chunk::class.java);
+            return JsonUtils.builder.fromJson(s, Chunk::class.java)
         }
     }
 
     init {
-        blocks = Array(CHUNK_SIZE.x) { Array(CHUNK_SIZE.y) { arrayOfNulls<Block>(CHUNK_SIZE.z) } }
+        blocks = Array(CHUNK_SIZE.x.toInt()) {
+            Array(CHUNK_SIZE.y.toInt()) {
+                arrayOfNulls(CHUNK_SIZE.z.toInt())
+            }
+        }
     }
 }

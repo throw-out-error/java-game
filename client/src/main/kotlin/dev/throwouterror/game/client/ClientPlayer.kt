@@ -8,7 +8,6 @@ import dev.throwouterror.game.common.network.packet.PlayerInfoPacket
 import dev.throwouterror.util.math.Direction
 import org.lwjgl.glfw.GLFW
 
-
 /**
  * @author Theo Paris
  */
@@ -31,6 +30,6 @@ class ClientPlayer(info: PlayerInfo, private var socket: ClientSocket) : Player(
 
     fun move(x: Double, y: Double, z: Double) {
         this.camera.moveForward(transform, x, y, z)
-        sendTransform()
+//        sendTransform()
     }
 }

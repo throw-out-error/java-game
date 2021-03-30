@@ -3,7 +3,6 @@ package dev.throwouterror.game.client.engine
 import dev.throwouterror.game.common.Transform
 import dev.throwouterror.game.common.math.lookAt
 import dev.throwouterror.util.math.Tensor
-import dev.throwouterror.util.math.rotation.RotationMatrix
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -19,9 +18,17 @@ class Camera(val transform: Transform) {
         private set
     private var zNear = 0.0f
         private set
-    private val rotationMatrix: RotationMatrix = RotationMatrix()
+    private val rotationMatrix: Tensor = Tensor.zeroes(intArrayOf(4, 4))
 
-    fun getPickRay(ray: Ray, screenX: Float, screenY: Float, viewportX: Float, viewportY: Float, viewportWidth: Float, viewportHeight: Float): Ray {
+    fun getPickRay(
+        ray: Ray,
+        screenX: Float,
+        screenY: Float,
+        viewportX: Float,
+        viewportY: Float,
+        viewportWidth: Float,
+        viewportHeight: Float
+    ): Ray {
         ray.setOrigin(screenX, screenY, 0.0f)
         ray.setDirection(screenX, screenY, 1.0f)
         unproject(ray.origin, viewportX, viewportY, viewportWidth, viewportHeight)
@@ -32,7 +39,7 @@ class Camera(val transform: Transform) {
 
     fun lookAt(target: Tensor, up: Tensor) {
         lookAt(transform.position, target, up)
-        transform.rotation.setValues(rotationMatrix.x.toDouble(), rotationMatrix.y.toDouble(), rotationMatrix.z.toDouble())
+        transform.rotation.set(rotationMatrix.x.toDouble(), rotationMatrix.y.toDouble(), rotationMatrix.z.toDouble())
     }
 
     fun moveForward(transform: Transform, dx: Double, dy: Double, dz: Double) {
@@ -42,18 +49,23 @@ class Camera(val transform: Transform) {
     }
 
     fun rotate(direction: Tensor) {
-        rotationMatrix.transform(direction)
+//        rotationMatrix.tra(direction)
     }
 
-    fun unproject(windowCoords: Tensor, viewportX: Float, viewportY: Float, viewportWidth: Float, viewportHeight: Float): Tensor {
+    fun unproject(
+        windowCoords: Tensor,
+        viewportX: Float,
+        viewportY: Float,
+        viewportWidth: Float,
+        viewportHeight: Float
+    ): Tensor {
         var x: Double = (windowCoords.x - viewportX) / viewportWidth
         var y: Double = (windowCoords.y - viewportY) / viewportHeight
         var z: Double = windowCoords.z
         x = x * 2.0 - 1.0
         y = y * 2.0 - 1.0
         z = z * 2.0 - 1.0
-        windowCoords.setValues(x, y, z)
+        windowCoords.set(x, y, z)
         return windowCoords
     }
-
 }

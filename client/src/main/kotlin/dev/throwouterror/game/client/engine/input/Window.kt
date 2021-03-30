@@ -6,8 +6,11 @@ import org.lwjgl.glfw.GLFWWindowSizeCallback
 import org.lwjgl.opengl.GL
 import org.lwjgl.opengl.GL11
 
-class Window(var width: Int,
-             var height: Int, val title: String) {
+class Window(
+    var width: Int,
+    var height: Int,
+    val title: String
+) {
     var window: Long = 0
         private set
     private var frames = 0
@@ -91,16 +94,16 @@ class Window(var width: Int,
     }
 
     fun setBackgroundColor(r: Float, g: Float, b: Float) {
-        background.setValues(r.toDouble(), g.toDouble(), b.toDouble())
+        background.set(r.toDouble(), g.toDouble(), b.toDouble())
     }
 
     fun setFullscreen(isFullscreen: Boolean) {
-        this.isFullscreen = isFullscreen;
-        isResized = true;
+        this.isFullscreen = isFullscreen
+        isResized = true
         if (isFullscreen) {
-            GLFW.glfwGetWindowPos(window, windowPosX, windowPosY);
+            GLFW.glfwGetWindowPos(window, windowPosX, windowPosY)
         } else {
-            GLFW.glfwSetWindowMonitor(window, 0, windowPosX[0], windowPosY[0], width, height, 0);
+            GLFW.glfwSetWindowMonitor(window, 0, windowPosX[0], windowPosY[0], width, height, 0)
         }
     }
 
@@ -111,5 +114,4 @@ class Window(var width: Int,
     companion object {
         private var time: Long = 0
     }
-
 }
