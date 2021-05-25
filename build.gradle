@@ -29,7 +29,7 @@ allprojects {
     dependencies {
         implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.4.20"
         implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.1'
-        implementation "com.google.code.gson:gson:2.8.6"
+        implementation "com.google.code.gson:gson:2.8.7"
         implementation 'com.github.throw-out-error:toe-utils:master-SNAPSHOT'
 //        implementation "dev.throwouterror:toe-utils:0.0.1"
         implementation 'com.github.ben-manes.caffeine:caffeine:3.0.1'
