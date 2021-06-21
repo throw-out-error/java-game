@@ -32,7 +32,7 @@ allprojects {
         implementation "com.google.code.gson:gson:2.8.7"
         implementation 'com.github.throw-out-error:toe-utils:master-SNAPSHOT'
 //        implementation "dev.throwouterror:toe-utils:0.0.1"
-        implementation 'com.github.ben-manes.caffeine:caffeine:3.0.1'
+        implementation 'com.github.ben-manes.caffeine:caffeine:3.0.2'
 //        implementation "com.firenodes:lwsl:2.2.0-RELEASE"
         implementation 'com.github.creepinson:LWSL:master-SNAPSHOT'
     }
