@@ -34,7 +34,7 @@ allprojects {
 //        implementation "dev.throwouterror:toe-utils:0.0.1"
         implementation 'com.github.ben-manes.caffeine:caffeine:3.0.2'
 //        implementation "com.firenodes:lwsl:2.2.0-RELEASE"
-        implementation 'com.github.creepinson:LWSL:master-SNAPSHOT'
+        implementation 'com.github.creepinson:LWSL:2.0.1-Release'
     }
 }
 
